@@ -22,7 +22,7 @@ export const siteConfig = {
     name: 'Funiki',
     nameZh: '浮尼奇',
     /** 基础信息行的年龄 */
-    age: 25,
+    age: 24,
     /** 地址旁的网页链接 */
     website: { label: 'funiki.design', url: 'https://funiki.design' },
     role: '独立设计师 & 前端开发者',
