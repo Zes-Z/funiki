@@ -13,7 +13,7 @@ export const siteConfig = {
     titleZh: '浮尼记',
     description: '独立设计师与前端开发者。做品牌、做产品，也做自己觉得有趣的小东西。',
     lang: 'zh-CN',
-    url: 'https://funiki.design',
+    url: 'https://zes-z.github.io/funiki/',
     themeColor: '#ffffff',
   },
 
@@ -24,7 +24,7 @@ export const siteConfig = {
     /** 基础信息行的年龄 */
     age: 24,
     /** 地址旁的网页链接 */
-    website: { label: 'funiki.design', url: 'https://funiki.design' },
+    website: { label: 'funiki.design', url: 'https://zes-z.github.io/funiki/' },
     role: '独立设计师 & 前端开发者',
     bio: '做品牌、做产品，也做自己觉得有趣的小东西。相信好的设计是克制的，好的代码也是。',
     location: '杭州，中国',
