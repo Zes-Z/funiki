@@ -4,6 +4,7 @@ import '@fontsource-variable/bricolage-grotesque';
 import '../styles/global.css';
 import '../styles/content.css';
 import siteConfig from '../../siteconfig';
+import { assetUrl } from '../utils/assetUrl';
 
 interface Props {
   title?: string;
@@ -35,17 +36,17 @@ const avatarRadius =
     <meta name="author" content={siteConfig.identity.name} />
     <meta name="theme-color" content={siteConfig.site.themeColor} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={assetUrl('/favicon.svg')} />
     <style is:inline set:html={`:root{--hero-avatar-radius:${avatarRadius};--avatar-size:${siteConfig.hero.avatarSize};}`} />
-    <link rel="preload" as="image" href={siteConfig.identity.avatar} fetchpriority="high" />
-    <link rel="apple-touch-icon" href="/avatar.jpg" />
+    <link rel="preload" as="image" href={assetUrl(siteConfig.identity.avatar)} fetchpriority="high" />
+    <link rel="apple-touch-icon" href={assetUrl('/avatar.jpg')} />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={siteConfig.site.title} />
-    <meta property="og:image" content={new URL('/og.jpg', canonical)} />
+    <meta property="og:image" content={new URL(assetUrl('/og.jpg'), canonical)} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={`${siteConfig.identity.name} · ${siteConfig.identity.role}`} />
@@ -53,7 +54,7 @@ const avatarRadius =
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL('/og.jpg', canonical)} />
+    <meta name="twitter:image" content={new URL(assetUrl('/og.jpg'), canonical)} />
 
     <noscript>
       <style>

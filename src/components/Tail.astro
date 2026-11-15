@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import siteConfig from '../../siteconfig';
+import { assetUrl } from '../utils/assetUrl';
 
 const { sections, identity, socials, site } = siteConfig;
 
@@ -75,7 +76,7 @@ const isExternal = (social: (typeof socials)[number]) => social.icon !== 'mailco
     <div class="wrap footer__inner">
       <div class="footer__identity">
         <figure class="footer-portrait" data-footer-portrait>
-          <img src={identity.avatar} alt={identity.avatarAlt} width="720" height="720" loading="lazy" decoding="async" />
+          <img src={assetUrl(identity.avatar)} alt={identity.avatarAlt} width="720" height="720" loading="lazy" decoding="async" />
         </figure>
         <div class="footer__signature" aria-hidden="true">
           <span>{site.title}</span>

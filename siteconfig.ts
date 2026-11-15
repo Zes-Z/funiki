@@ -31,7 +31,8 @@ export const siteConfig = {
     timezone: 'Asia/Shanghai',
     /** 头像：放在 public/ 下，建议 800×800 以上正方形 */
     avatar: '/avatar.webp',
-    avatarAlt: '/avatar.webp',
+    /** 头像的替代文字（给读屏 / SEO 用，不是图片地址） */
+    avatarAlt: 'Funiki 的黑白头像',
     /** 简历：放在 public/ 下，文件名可含空格 */
     resume: '/kim cv.pdf',
     resumeLabel: '下载简历',
@@ -45,7 +46,8 @@ export const siteConfig = {
     imageAreaRatio: 0.56,
     /** 首屏上半区的大图（放在 public/ 下，替换成你自己的图片即可） */
     coverImage: '/hero.jpg',
-    coverAlt: '/hero.jpg',
+    /** 首屏大图的替代文字（给读屏 / SEO 用，不是图片地址） */
+    coverAlt: '云海之上的雪山与日出',
     /** 头像直径的 clamp 值（位于上下两块之间的分界线上） */
     avatarSize: 'clamp(104px, 13vh, 140px)',
     /** 头像形状：'circle' | 'rounded' | 'arch' */

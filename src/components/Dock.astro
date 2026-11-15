@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import siteConfig from '../../siteconfig';
+import { assetUrl } from '../utils/assetUrl';
 
 const { identity, socials, dock } = siteConfig;
 
@@ -13,7 +14,7 @@ const isExternal = (social: (typeof socials)[number]) => social.icon !== 'mailco
 
 <!-- floating avatar used for the hero → corner morph -->
 <div class="morph" data-morph aria-hidden="true">
-  <img src={identity.avatar} alt="" width="720" height="720" decoding="async" />
+  <img src={assetUrl(identity.avatar)} alt="" width="720" height="720" decoding="async" />
 </div>
 
 <div class="dock" data-dock aria-hidden="true" inert>
@@ -26,7 +27,7 @@ const isExternal = (social: (typeof socials)[number]) => social.icon !== 'mailco
     aria-controls="dock-menu"
     aria-haspopup="true"
   >
-    <img src={identity.avatar} alt={identity.avatarAlt} width="720" height="720" decoding="async" />
+    <img src={assetUrl(identity.avatar)} alt={identity.avatarAlt} width="720" height="720" decoding="async" />
     <span class="dock__ring" aria-hidden="true"></span>
     <span class="dock__dot" aria-hidden="true"></span>
   </button>
@@ -52,7 +53,7 @@ const isExternal = (social: (typeof socials)[number]) => social.icon !== 'mailco
       <li>
         <a
           class="dock__item"
-          href={identity.resume}
+          href={assetUrl(identity.resume)}
           download
           aria-label="下载简历"
           title="下载简历"

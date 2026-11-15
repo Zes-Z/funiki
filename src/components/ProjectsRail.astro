@@ -3,6 +3,7 @@ import { Image, getImage } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 import Icon from './Icon.astro';
 import siteConfig from '../../siteconfig';
+import { assetUrl } from '../utils/assetUrl';
 
 const { sections } = siteConfig;
 
@@ -74,7 +75,7 @@ const yearRange = years.length ? `${years[0]} — ${years[years.length - 1]}` : 
                       <video
                         class="work-card__video"
                         data-work-video
-                        data-src={data.video}
+                        data-src={data.video ? assetUrl(data.video) : undefined}
                         poster={poster}
                         muted
                         loop
