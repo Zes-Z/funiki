@@ -1,0 +1,542 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Icon from './Icon.astro';
+import siteConfig from '../../siteconfig';
+import '../styles/depth-field.css';
+
+const { sections } = siteConfig;
+
+const pictures = (await getCollection('picture')).sort((a, b) => a.data.order - b.data.order);
+
+const imageModules = import.meta.glob<any>('/src/content/picture/**/*.{jpg,jpeg,png,webp,avif}', {
+  eager: true,
+  import: 'default',
+});
+const videoModules = import.meta.glob<string>('/src/content/picture/**/*.{mp4,webm}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+});
+
+const base = '/src/content/picture/';
+
+const resolveImage = (path: string) => imageModules[base + path];
+const resolveVideo = (path?: string) => (path ? videoModules[base + path] : undefined);
+
+const items = pictures.map((entry, index) => {
+  const meta = resolveImage(entry.data.image);
+  const video = resolveVideo(entry.data.video);
+  const ratio = meta ? meta.width / meta.height : 1;
+  return {
+    ...entry.data,
+    meta,
+    videoUrl: video,
+    ratio,
+    index,
+    full: meta?.src,
+  };
+});
+
+const total = items.length;
+---
+
+<section id="life" class="section section--life" data-life>
+  <div class="wrap">
+    <header class="section-head" data-reveal>
+      <div class="section-head__main">
+        <p class="eyebrow"><span>{sections.life.index}</span>{sections.life.label}</p>
+        <h2 class="section-title">{sections.life.title}</h2>
+      </div>
+      <div class="section-head__aside">
+        <p class="section-lede">{sections.life.intro}</p>
+      </div>
+    </header>
+  </div>
+
+  <div class="life__stage" data-life-stage>
+    <div class="play-wall" data-life-wall>
+      {items.map((item, index) => (
+        <figure
+          class="play-tile"
+          data-life-tile
+          data-full={item.full}
+          data-video={item.videoUrl ?? ''}
+          data-type={item.type}
+          data-caption={item.caption}
+          data-taken={item.taken}
+          data-w={item.meta?.width}
+          data-h={item.meta?.height}
+          style={`--r: ${item.ratio.toFixed(4)}; --reveal-delay: ${Math.min(index, 6) * 0.06}s`}
+          data-reveal
+        >
+          <button
+            class="play-open"
+            type="button"
+            aria-label={`查看大图：${item.caption || item.alt}`}
+            aria-haspopup="dialog"
+            data-life-open
+          >
+            <span class="play-media">
+              <Image
+                src={item.meta}
+                alt={item.alt}
+                widths={[480, 800, 1200]}
+                sizes="(max-width: 700px) 46vw, 30vw"
+                loading={index < 3 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+              {item.type !== 'photo' && (
+                <span class="play-badge">
+                  <Icon name={item.type === 'live' ? 'live' : 'play'} size={11} />
+                  {item.type === 'live' ? 'LIVE' : 'VIDEO'}
+                </span>
+              )}
+            </span>
+          </button>
+          <figcaption class="play-caption">{item.caption}</figcaption>
+
+          <template class="play-detail">
+            <div class="lightbox-media" style={`aspect-ratio: ${item.ratio.toFixed(4)}`}>
+              <img src={item.full} alt={item.alt} width="1200" height={Math.round(1200 / item.ratio)} loading="lazy" />
+              {item.videoUrl && (
+                <video
+                  src={item.videoUrl}
+                  poster={item.full}
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                  aria-hidden="true"
+                ></video>
+              )}
+            </div>
+            <div class="lightbox-caption">
+              <p class="lightbox-title">{item.caption}</p>
+              <p class="lightbox-meta">{item.taken}</p>
+            </div>
+          </template>
+        </figure>
+      ))}
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="life__foot" data-reveal>
+      <p class="life__hint">
+        <Icon name="arrow-up-right" size={15} />
+        <span data-life-hint>{sections.life.hint}</span>
+      </p>
+      <p class="life__count">
+        <span>{String(total).padStart(2, '0')}</span>
+        帧
+      </p>
+    </div>
+  </div>
+
+  <!-- full-screen viewer (fallback wall) -->
+  <div
+    class="lightbox"
+    data-lightbox
+    aria-hidden="true"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-label="图片查看器"
+    tabindex="-1"
+  >
+    <div class="lightbox__backdrop" data-lightbox-close aria-hidden="true"></div>
+    <div class="lightbox__stage">
+      <div class="lightbox__media" data-lightbox-media></div>
+      <div class="lightbox__caption">
+        <p class="lightbox__title" data-lightbox-title></p>
+        <p class="lightbox__meta" data-lightbox-meta></p>
+      </div>
+    </div>
+    <div class="lightbox__ui">
+      <button class="lightbox__btn lightbox__nav" type="button" data-lightbox-prev aria-label="上一张">
+        <Icon name="chevron-left" size={18} />
+      </button>
+      <span class="lightbox__counter">
+        <span data-lightbox-index>01</span>
+        <span class="lightbox__counter-sep" aria-hidden="true">/</span>
+        <span data-lightbox-total>{String(total).padStart(2, '0')}</span>
+      </span>
+      <button class="lightbox__btn lightbox__nav" type="button" data-lightbox-next aria-label="下一张">
+        <Icon name="chevron-right" size={18} />
+      </button>
+      <button class="lightbox__btn lightbox__close" type="button" data-lightbox-close aria-label="关闭">
+        <Icon name="close" size={18} />
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section--life {
+    position: relative;
+    padding-bottom: clamp(70px, 9vw, 120px);
+  }
+
+  .life__stage {
+    position: relative;
+    margin-top: clamp(36px, 5vw, 64px);
+  }
+
+  /* justified rows — every row shares one height, last row keeps its nature */
+  .play-wall {
+    --row: 17rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-inline: var(--pad-x);
+  }
+
+  .play-wall::after {
+    content: '';
+    flex: 1000000 1 0;
+  }
+
+  .play-tile {
+    flex: calc(var(--r) * 1000) 1 calc(var(--r) * var(--row));
+    min-width: 0;
+    position: relative;
+    margin: 0;
+  }
+
+  .play-open {
+    display: block;
+    width: 100%;
+    cursor: zoom-in;
+  }
+
+  .play-media {
+    position: relative;
+    display: block;
+    aspect-ratio: var(--r);
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--paper-sink);
+    transform: translateZ(0);
+  }
+
+  .play-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.93) contrast(1.02);
+    transition: transform 0.8s var(--ease-out), opacity 0.4s ease;
+    will-change: transform;
+  }
+
+  .play-media :global(video) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.8s var(--ease-out);
+    filter: saturate(0.93) contrast(1.02);
+  }
+
+  .play-media.is-live-playing :global(video) {
+    opacity: 1;
+  }
+
+  .play-media.is-live-playing :global(img) {
+    transform: scale(1.02);
+  }
+
+  .play-badge {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.32em 0.6em;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--paper-raise) 82%, transparent);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    color: var(--ink);
+    pointer-events: none;
+  }
+
+  .play-caption {
+    display: none;
+  }
+
+  .life__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-top: clamp(28px, 3.4vw, 44px);
+    padding-top: clamp(14px, 1.6vw, 20px);
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .life__hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+  }
+
+  .life__count {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5em;
+    color: var(--ink-4);
+  }
+
+  .life__count span {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0;
+    color: var(--ink);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .play-caption {
+      display: block;
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      bottom: calc(100% + 6px);
+      font-size: 0.78rem;
+      line-height: 1.3;
+      color: var(--ink-3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      opacity: 0;
+      transform: translateY(2px);
+      transition: opacity 0.3s ease, transform 0.4s var(--ease-out);
+      pointer-events: none;
+    }
+
+    .play-tile:hover .play-caption,
+    .play-open:focus-visible ~ .play-caption {
+      opacity: 1;
+      transform: none;
+    }
+
+    .play-tile:hover .play-media :global(img),
+    .play-tile:hover .play-media :global(video) {
+      transform: scale(1.02);
+    }
+
+    .play-wall:has(.play-tile:hover) .play-tile:not(:hover) {
+      opacity: 0.55;
+    }
+
+    .play-tile {
+      transition: opacity 0.4s ease;
+    }
+
+    .play-open:active {
+      transform: scale(0.992);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .play-wall {
+      --row: 9rem;
+      gap: 8px;
+    }
+  }
+
+  /* ------------------------------------------------------------ */
+  /* lightbox                                                     */
+  /* ------------------------------------------------------------ */
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 85;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 100svh;
+    padding: clamp(24px, 3.5vw, 44px) var(--pad-x) clamp(92px, 10vh, 112px);
+  }
+
+  .lightbox[hidden] {
+    display: none;
+  }
+
+  .lightbox__backdrop {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    backdrop-filter: blur(18px) saturate(1.15);
+    opacity: 0;
+  }
+
+  .lightbox__stage {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(12px, 2vw, 18px);
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .lightbox__media {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 92vw;
+    max-height: calc(100svh - clamp(210px, 26vh, 270px));
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--paper-sink);
+    box-shadow:
+      0 0 0 1px rgba(20, 19, 16, 0.06),
+      0 40px 90px -50px rgba(20, 19, 16, 0.6);
+    opacity: 0;
+    transform: scale(0.965) translateY(8px);
+    will-change: transform, opacity;
+  }
+
+  .lightbox__media :global(img),
+  .lightbox__media :global(video) {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 92vw;
+    max-height: calc(100svh - clamp(210px, 26vh, 270px));
+    object-fit: contain;
+  }
+
+  .lightbox__caption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  .lightbox__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+    line-height: 1.2;
+  }
+
+  .lightbox__meta {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .lightbox__ui {
+    position: fixed;
+    left: 50%;
+    bottom: clamp(16px, 3vw, 32px);
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--paper-raise) 82%, transparent);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--line);
+    box-shadow: 0 18px 40px -30px rgba(20, 19, 16, 0.5);
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+
+  .lightbox__btn {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    color: var(--ink-2);
+    transition: background-color 0.35s var(--ease-out), color 0.35s var(--ease-out);
+  }
+
+  .lightbox__btn:hover {
+    background: var(--paper-sink);
+    color: var(--ink);
+  }
+
+  .lightbox__close {
+    margin-left: 4px;
+    border: 1px solid var(--line);
+  }
+
+  .lightbox__counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    padding-inline: 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lightbox__counter-sep {
+    opacity: 0.5;
+  }
+
+  @supports (height: 100dvh) {
+    .lightbox {
+      height: 100dvh;
+    }
+
+    .lightbox__media,
+    .lightbox__media :global(img),
+    .lightbox__media :global(video) {
+      max-height: calc(100dvh - clamp(210px, 26vh, 270px));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .lightbox {
+      padding: 20px var(--pad-x) 88px;
+    }
+
+    .lightbox__media,
+    .lightbox__media :global(img),
+    .lightbox__media :global(video) {
+      max-height: calc(100svh - 200px);
+    }
+
+    .lightbox__ui {
+      bottom: 14px;
+    }
+  }
+
+  @supports (height: 100dvh) {
+    @media (max-width: 640px) {
+      .lightbox__media,
+      .lightbox__media :global(img),
+      .lightbox__media :global(video) {
+        max-height: calc(100dvh - 200px);
+      }
+    }
+  }
+</style>

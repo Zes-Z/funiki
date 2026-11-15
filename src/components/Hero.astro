@@ -1,0 +1,413 @@
+---
+import Icon from './Icon.astro';
+import siteConfig from '../../siteconfig';
+
+const { hero, identity, socials } = siteConfig;
+
+const avatarRadius =
+  hero.avatarShape === 'circle' ? '50%' : hero.avatarShape === 'rounded' ? '26px' : '50% 50% 10px 10px';
+
+const socialHref = (social: (typeof socials)[number]) =>
+  social.icon === 'mailcolor' ? `mailto:${identity.email}` : social.url;
+const isExternal = (social: (typeof socials)[number]) => social.icon !== 'mailcolor';
+---
+
+<section
+  id="home"
+  class="hero"
+  data-hero
+  style={`--hero-ratio: ${hero.imageAreaRatio}; --avatar-size: ${hero.avatarSize}; --hero-avatar-radius: ${avatarRadius};`}
+>
+  <div class="hero__media">
+    <img
+      class="hero__cover"
+      src={hero.coverImage}
+      alt={hero.coverAlt}
+      width="1600"
+      height="900"
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+    />
+  </div>
+
+  <div class="hero__avatar" data-hero-avatar>
+    <div class="hero__avatar-inner" data-hero-avatar-inner>
+      <img src={identity.avatar} alt={identity.avatarAlt} width="720" height="880" decoding="async" />
+    </div>
+  </div>
+
+  <div class="hero__info">
+    <div class="hero__info-inner">
+      <p class="hero__line hero__line--primary" data-hero-line>
+        {identity.name}{identity.age ? ` · ${identity.age}` : ''}
+      </p>
+
+      <p class="hero__line hero__line--secondary" data-hero-line>
+        <span>{identity.location}</span>
+        <span class="hero__line-sep" aria-hidden="true">·</span>
+        <a class="link-line" href={identity.website.url} target="_blank" rel="noopener noreferrer">
+          {identity.website.label}
+        </a>
+      </p>
+
+      <div class="hero__motto" data-hero-motto>
+        <p class="hero__motto-line" aria-hidden="true">
+          <span data-typewriter-text></span><span class="hero__caret" aria-hidden="true"></span>
+        </p>
+        <span class="visually-hidden">座右铭列表：{hero.motto.lines.join('；')}</span>
+      </div>
+
+      <div class="hero__actions" data-hero-actions>
+        <ul class="hero__socials" aria-label="社交账号">
+          {socials.map((social) => (
+            <li>
+              <a
+                class="hero__social"
+                href={socialHref(social)}
+                target={isExternal(social) ? '_blank' : undefined}
+                rel={isExternal(social) ? 'noopener noreferrer' : undefined}
+                aria-label={social.label}
+                title={social.label}
+              >
+                <Icon name={social.icon} size={17} />
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <a class="hero__resume" href={identity.resume} download>
+          <Icon name="download" size={15} />
+          {identity.resumeLabel}
+        </a>
+      </div>
+    </div>
+
+    <div class="hero__bottom">
+      <a class="hero__scroll" href="#work" data-scroll-hint>
+        <span class="hero__scroll-line" aria-hidden="true"></span>
+        {hero.scrollHint}
+      </a>
+      <p class="hero__bottom-meta" data-hero-meta>
+        {identity.nameZh} · {identity.location}
+        <span class="hero__bottom-dot" aria-hidden="true">·</span>
+        <span data-clock="hms">--:--:--</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    --hero-media-h: calc(100svh * var(--hero-ratio, 0.56));
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    overflow: clip;
+  }
+
+  /* ------------------------------ image area ------------------------------ */
+
+  .hero__media {
+    position: relative;
+    flex: 0 0 auto;
+    height: var(--hero-media-h);
+    overflow: hidden;
+    background: var(--paper-sink);
+  }
+
+  .hero__cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.92) contrast(1.02);
+    transform: scale(1.01);
+  }
+
+  /* ------------------------- avatar on the divider ------------------------ */
+
+  .hero__avatar {
+    position: absolute;
+    top: calc(var(--hero-media-h) - var(--avatar-size) / 2);
+    left: 50%;
+    z-index: 4;
+    width: var(--avatar-size);
+    aspect-ratio: 1;
+    transform: translateX(-50%);
+    border-radius: var(--hero-avatar-radius, 50%);
+    will-change: opacity;
+  }
+
+  .hero__avatar-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--hero-avatar-radius, 50%);
+    overflow: hidden;
+    background: var(--paper-deep);
+    box-shadow:
+      0 0 0 1px rgba(20, 19, 16, 0.06),
+      0 18px 40px -24px rgba(20, 19, 16, 0.4),
+      0 0 0 7px var(--paper);
+    will-change: transform, opacity, filter;
+  }
+
+  .hero__avatar-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.94) contrast(1.02);
+    transform: scale(1.01);
+  }
+
+  /* -------------------------------- info area ------------------------------ */
+
+  .hero__info {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--avatar-size) / 2 + clamp(14px, 2vw, 24px)) var(--pad-x) clamp(16px, 2.2vw, 26px);
+  }
+
+  .hero__info-inner {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 1.2vw, 14px);
+    width: 100%;
+    max-width: 920px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .hero__line--primary {
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 2.5vw, 2.05rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .hero__line--secondary {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.45em;
+    font-size: clamp(0.84rem, 0.28vw + 0.8rem, 0.95rem);
+    color: var(--ink-3);
+  }
+
+  .hero__line-sep {
+    opacity: 0.55;
+  }
+
+  .hero__line--secondary a {
+    color: var(--ink-2);
+  }
+
+  .hero__motto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.1em;
+    width: 100%;
+    margin-block: clamp(2px, 0.6vw, 6px);
+  }
+
+  .hero__motto-line {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.5em;
+    min-height: 1.5em;
+    font-family: var(--font-display);
+    font-size: clamp(1.02rem, 1.4vw, 1.32rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .hero__caret {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 2px;
+    height: 1em;
+    margin-left: 0.14em;
+    background: var(--accent);
+    animation: blink 1.05s steps(1) infinite;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 1.2vw, 14px);
+    margin-top: clamp(2px, 0.6vw, 8px);
+  }
+
+  .hero__socials {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .hero__social {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    color: var(--ink-2);
+    transition: background-color 0.4s var(--ease-out), color 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  }
+
+  .hero__social:hover {
+    background: transparent;
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .hero__resume {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    min-height: 38px;
+    padding-left: clamp(10px, 1.4vw, 16px);
+    border-left: 1px solid var(--line);
+    font-size: 12.5px;
+    letter-spacing: 0.01em;
+    color: var(--ink-2);
+    transition: color 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+  }
+
+  .hero__resume:hover {
+    color: var(--accent);
+    border-color: var(--line-strong);
+  }
+
+  .hero__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    padding-top: clamp(10px, 1.2vw, 16px);
+    margin-top: auto;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .hero__scroll {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8em;
+    padding-block: 6px;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .hero__scroll:hover {
+    color: var(--ink);
+  }
+
+  .hero__scroll-line {
+    position: relative;
+    display: block;
+    width: 34px;
+    height: 1px;
+    background: var(--line-strong);
+    overflow: hidden;
+  }
+
+  .hero__scroll-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    transform-origin: left;
+    animation: scroll-line 2.4s var(--ease-in-out) infinite;
+  }
+
+  .hero__bottom-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hero__bottom-dot {
+    opacity: 0.5;
+  }
+
+  @keyframes blink {
+    0%,
+    48% {
+      opacity: 1;
+    }
+    49%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes scroll-line {
+    0% {
+      transform: scaleX(0) translateX(0);
+    }
+    45% {
+      transform: scaleX(1) translateX(0);
+    }
+    55% {
+      transform: scaleX(1) translateX(0);
+    }
+    100% {
+      transform: scaleX(0) translateX(100%);
+    }
+  }
+
+  @media (max-height: 760px) {
+    .hero {
+      --hero-media-h: calc(100svh * 0.46);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      --hero-media-h: calc(100svh * 0.5);
+    }
+
+    .hero__info {
+      padding-bottom: 18px;
+    }
+
+    .hero__info-inner {
+      gap: 10px;
+    }
+
+    .hero__bottom-meta {
+      display: none;
+    }
+
+    .hero__bottom {
+      justify-content: center;
+    }
+
+    .hero__motto-line {
+      font-size: clamp(0.98rem, 4.4vw, 1.18rem);
+      max-width: 88vw;
+      white-space: normal;
+      text-align: center;
+    }
+  }
+</style>

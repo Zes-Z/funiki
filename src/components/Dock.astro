@@ -1,0 +1,254 @@
+---
+import Icon from './Icon.astro';
+import siteConfig from '../../siteconfig';
+
+const { identity, socials, dock } = siteConfig;
+
+const socialHref = (social: (typeof socials)[number]) =>
+  social.icon === 'mailcolor' ? `mailto:${identity.email}` : social.url;
+const isExternal = (social: (typeof socials)[number]) => social.icon !== 'mailcolor';
+---
+
+<style is:inline set:html={`:root{--dock-size:${dock.size}px;--dock-x:${dock.offset.x}px;--dock-y:${dock.offset.y}px;}@media (max-width:640px){:root{--dock-size:46px;--dock-x:16px;--dock-y:14px;}}`} />
+
+<!-- floating avatar used for the hero → corner morph -->
+<div class="morph" data-morph aria-hidden="true">
+  <img src={identity.avatar} alt="" width="720" height="720" decoding="async" />
+</div>
+
+<div class="dock" data-dock aria-hidden="true" inert>
+  <button
+    class="dock__button"
+    type="button"
+    data-dock-button
+    aria-label="打开个人链接菜单"
+    aria-expanded="false"
+    aria-controls="dock-menu"
+    aria-haspopup="true"
+  >
+    <img src={identity.avatar} alt={identity.avatarAlt} width="720" height="720" decoding="async" />
+    <span class="dock__ring" aria-hidden="true"></span>
+    <span class="dock__dot" aria-hidden="true"></span>
+  </button>
+
+  <div class="dock__menu" id="dock-menu" data-dock-menu aria-hidden="true" inert>
+    <ul class="dock__list" aria-label="个人链接">
+      {socials.map((social) => (
+        <li>
+          <a
+            class="dock__item"
+            href={socialHref(social)}
+            target={isExternal(social) ? '_blank' : undefined}
+            rel={isExternal(social) ? 'noopener noreferrer' : undefined}
+            aria-label={social.label}
+            title={social.label}
+            data-label={social.label}
+            data-dock-item
+          >
+            <Icon name={social.icon} size={17} />
+          </a>
+        </li>
+      ))}
+      <li>
+        <a
+          class="dock__item"
+          href={identity.resume}
+          download
+          aria-label="下载简历"
+          title="下载简历"
+          data-label="CV · 下载简历"
+          data-dock-item
+        >
+          <Icon name="cv" size={17} />
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<style>
+  .morph {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 44;
+    width: 72px;
+    height: 72px;
+    border-radius: var(--hero-avatar-radius, 50%);
+    overflow: hidden;
+    pointer-events: none;
+    transform-origin: 0 0;
+    opacity: 0;
+    visibility: hidden;
+    will-change: transform;
+    box-shadow:
+      0 0 0 1px rgba(20, 19, 16, 0.08),
+      0 16px 36px -18px rgba(20, 19, 16, 0.45);
+  }
+
+  .morph img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.95);
+  }
+
+  .dock {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .dock__button {
+    position: absolute;
+    top: var(--dock-y, 24px);
+    left: var(--dock-x, 26px);
+    width: var(--dock-size, 56px);
+    height: var(--dock-size, 56px);
+    border-radius: 50%;
+    pointer-events: auto;
+    transition: transform 0.5s var(--ease-out);
+  }
+
+  .dock__button img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow:
+      0 0 0 1px rgba(20, 19, 16, 0.1),
+      0 10px 24px -14px rgba(20, 19, 16, 0.45);
+    filter: saturate(0.95);
+  }
+
+  .dock__ring {
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    opacity: 0;
+    transform: scale(0.86);
+    transition: opacity 0.35s var(--ease-out), transform 0.5s var(--ease-out);
+  }
+
+  .dock__button:hover {
+    transform: scale(1.06);
+  }
+
+  .dock__button:hover .dock__ring,
+  .dock.is-open .dock__ring {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .dock__dot {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #2fb36a;
+    box-shadow: 0 0 0 3px rgba(47, 179, 106, 0.18);
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .dock.is-open .dock__dot {
+    transform: scale(0);
+  }
+
+  .dock__menu {
+    position: absolute;
+    top: calc(var(--dock-y, 24px) + var(--dock-size, 56px) + 10px);
+    left: var(--dock-x, 26px);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transform-origin: 50% 0%;
+    will-change: transform, opacity;
+  }
+
+  .dock__list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 8px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--paper-raise) 92%, transparent);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(18px) saturate(1.1);
+    -webkit-backdrop-filter: blur(18px) saturate(1.1);
+    box-shadow:
+      0 1px 2px rgba(20, 19, 16, 0.04),
+      0 26px 54px -30px rgba(20, 19, 16, 0.3);
+  }
+
+  .dock__item {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: var(--ink-2);
+    background: rgba(20, 19, 16, 0.045);
+    transition:
+      background-color 0.35s var(--ease-out),
+      color 0.35s var(--ease-out),
+      transform 0.35s var(--ease-out);
+  }
+
+  .dock__item:hover,
+  .dock__item:focus-visible {
+    background: rgba(20, 19, 16, 0.09);
+    color: var(--ink);
+    transform: translateY(-1px);
+  }
+
+  .dock__item::after {
+    content: attr(data-label);
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    padding: 0.42em 0.7em;
+    border-radius: 999px;
+    background: var(--paper-raise);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    box-shadow: 0 8px 18px -14px rgba(20, 19, 16, 0.4);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-4px, -50%);
+    transition: opacity 0.3s var(--ease-out), transform 0.35s var(--ease-out);
+  }
+
+  .dock__item:hover::after,
+  .dock__item:focus-visible::after {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+
+  html.is-sheet-open .dock__menu {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  @media (max-width: 640px) {
+    .dock__menu {
+      top: calc(var(--dock-y, 14px) + var(--dock-size, 46px) + 8px);
+    }
+
+    .dock__item {
+      width: 38px;
+      height: 38px;
+    }
+  }
+</style>

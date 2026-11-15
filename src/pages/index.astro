@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ProjectsRail from '../components/ProjectsRail.astro';
+import LifeWall from '../components/LifeWall.astro';
+import ThoughtsWall from '../components/ThoughtsWall.astro';
+import Tail from '../components/Tail.astro';
+import Dock from '../components/Dock.astro';
+import Sheet from '../components/Sheet.astro';
+---
+
+<BaseLayout>
+  <main id="main" tabindex="-1">
+    <Hero />
+    <ProjectsRail />
+    <LifeWall />
+    <ThoughtsWall />
+    <Tail />
+  </main>
+
+  <Dock />
+  <Sheet />
+</BaseLayout>

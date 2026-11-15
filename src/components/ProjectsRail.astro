@@ -1,0 +1,388 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+import Icon from './Icon.astro';
+import siteConfig from '../../siteconfig';
+
+const { sections } = siteConfig;
+
+const projects = (await getCollection('project')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const prepared = await Promise.all(
+  projects.map(async (entry) => {
+    const Content = (await render(entry)).Content;
+    // Lightweight poster for the hover-preview video; the raw cover JPEG is
+    // several hundred KB and would otherwise load for every video card.
+    const poster = entry.data.video
+      ? (await getImage({ src: entry.data.cover, width: 640, format: 'webp', quality: 72 })).src
+      : undefined;
+    return { entry, Content, poster };
+  })
+);
+
+const slugOf = (entry: (typeof projects)[number]) => entry.id.replace(/\/index$/, '');
+
+const years = projects
+  .map((entry) => Number.parseInt(entry.data.year, 10))
+  .filter((year) => Number.isFinite(year))
+  .sort((a, b) => a - b);
+const yearRange = years.length ? `${years[0]} — ${years[years.length - 1]}` : '';
+---
+
+<section id="work" class="section section--work">
+  <div class="wrap">
+    <header class="section-head" data-reveal>
+      <div class="section-head__main">
+        <p class="eyebrow"><span>{sections.work.index}</span>{sections.work.label}</p>
+        <h2 class="section-title">{sections.work.title}</h2>
+      </div>
+      <div class="section-head__aside">
+        <p class="section-lede">{sections.work.intro}</p>
+      </div>
+    </header>
+  </div>
+
+  <div class="work-marquee" data-work-marquee data-cursor-hover>
+    <div class="work-track" data-work-track>
+      {[0, 1].map((copy) => (
+        <ul class="work-set" aria-hidden={copy === 1 ? 'true' : undefined}>
+          {prepared.map(({ entry, poster }, index) => {
+            const data = entry.data;
+            return (
+              <li class="work-item" data-reveal style={`--reveal-delay: ${Math.min(index, 6) * 0.05}s`}>
+                <button
+                  type="button"
+                  class="work-card"
+                  data-sheet={`project:${slugOf(entry)}`}
+                  data-work-card
+                  aria-label={`查看项目：${data.title}`}
+                  tabindex={copy === 1 ? -1 : undefined}
+                >
+                  <span class="work-card__media" data-sheet-source>
+                    <Image
+                      draggable="false"
+                      src={data.cover}
+                      alt={data.coverAlt ?? data.title}
+                      widths={[420, 720, 1080]}
+                      sizes="(max-width: 700px) 76vw, 430px"
+                      loading={index < 3 && copy === 0 ? 'eager' : 'lazy'}
+                      decoding="async"
+                    />
+                    {data.video && (
+                      <video
+                        class="work-card__video"
+                        data-work-video
+                        data-src={data.video}
+                        poster={poster}
+                        muted
+                        loop
+                        playsinline
+                        preload="none"
+                        aria-hidden="true"
+                      ></video>
+                    )}
+                    <span class="work-card__glow" aria-hidden="true"></span>
+                    <span class="work-card__open" aria-hidden="true">
+                      <Icon name="arrow-up-right" size={15} />
+                    </span>
+                  </span>
+                  <span class="work-card__foot">
+                    <span class="work-card__title">{data.title}</span>
+                    <span class="work-card__meta">
+                      <span>{data.role}</span>
+                      <span class="work-card__year">{data.year}</span>
+                    </span>
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      ))}
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="work-foot" data-reveal>
+      <p class="work-hint">
+        <Icon name="arrow-right" size={15} />
+        {sections.work.hint}
+      </p>
+      <p class="work-count">
+        <span>{String(projects.length).padStart(2, '0')}</span>
+        个项目{yearRange && ` · ${yearRange}`}
+      </p>
+    </div>
+  </div>
+
+  {prepared.map(({ entry, Content }) => {
+    const data = entry.data;
+    const slug = slugOf(entry);
+    return (
+      <template data-sheet-template={`project:${slug}`} data-sheet-kicker="Case Study">
+        <article class="case">
+          <header class="case__head">
+            <p class="case__eyebrow">
+              <span>{data.year}</span>
+              <span class="case__eyebrow-sep" aria-hidden="true">/</span>
+              <span>{data.role}</span>
+            </p>
+            <h2 class="case__title">{data.title}</h2>
+            {data.subtitle && <p class="case__subtitle">{data.subtitle}</p>}
+            <p class="case__summary">{data.summary}</p>
+            <ul class="case__tags">
+              {data.tags.map((tag) => <li>{tag}</li>)}
+            </ul>
+          </header>
+
+          <figure class="case__cover" data-sheet-source>
+            <Image
+              src={data.cover}
+              alt={data.coverAlt ?? data.title}
+              widths={[640, 960, 1280]}
+              sizes="(max-width: 700px) 92vw, 880px"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+
+          <div class="prose">
+            <Content />
+          </div>
+
+          <footer class="case__foot">
+            <span class="case__foot-line" aria-hidden="true"></span>
+            <p>{data.title} — {data.year}</p>
+          </footer>
+        </article>
+      </template>
+    );
+  })}
+</section>
+
+<style>
+  .section--work {
+    padding-bottom: clamp(60px, 7vw, 96px);
+  }
+
+  .work-marquee {
+    position: relative;
+    touch-action: pan-y;
+    overscroll-behavior-x: contain;
+    margin-top: clamp(38px, 5.5vw, 70px);
+    overflow: hidden;
+    padding-block: 6px;
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 clamp(24px, 7vw, 120px),
+      #000 calc(100% - clamp(24px, 7vw, 120px)),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 clamp(24px, 7vw, 120px),
+      #000 calc(100% - clamp(24px, 7vw, 120px)),
+      transparent 100%
+    );
+  }
+
+  .work-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .work-set {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(18px, 2.4vw, 34px);
+    padding-inline: clamp(18px, 2.4vw, 34px);
+  }
+
+  .work-set + .work-set {
+    padding-inline-start: 0;
+  }
+
+  .work-item {
+    flex: 0 0 auto;
+    width: clamp(280px, 28vw, 430px);
+  }
+
+  .work-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    text-align: left;
+    outline-offset: 6px;
+  }
+
+  .work-card__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--paper-sink);
+    box-shadow:
+      0 0 0 1px rgba(20, 19, 16, 0.05),
+      0 20px 44px -30px rgba(20, 19, 16, 0.42);
+    transform: translateZ(0);
+  }
+
+  .work-card__media img,
+  .work-card__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s var(--ease-out), filter 0.7s var(--ease-out);
+    will-change: transform;
+  }
+
+  .work-card__media img {
+    filter: saturate(0.9) contrast(1.02);
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  .work-card__video {
+    opacity: 0;
+    transition: opacity 0.5s var(--ease-out), transform 0.9s var(--ease-out);
+    filter: saturate(0.9) contrast(1.02);
+  }
+
+  .work-card__video.is-playing {
+    opacity: 1;
+  }
+
+  .work-card__glow {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(20, 19, 16, 0) 55%, rgba(20, 19, 16, 0.22) 100%);
+    opacity: 0;
+    transition: opacity 0.6s var(--ease-out);
+    pointer-events: none;
+  }
+
+  .work-card__open {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--paper-raise);
+    color: var(--ink);
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+    transition: opacity 0.45s var(--ease-out), transform 0.55s var(--ease-out);
+    box-shadow: 0 8px 22px -12px rgba(20, 19, 16, 0.5);
+  }
+
+  .work-card:hover .work-card__media img,
+  .work-card:hover .work-card__video,
+  .work-card:focus-visible .work-card__media img {
+    transform: scale(1.045);
+  }
+
+  .work-card:hover .work-card__glow,
+  .work-card:focus-visible .work-card__glow {
+    opacity: 1;
+  }
+
+  .work-card:hover .work-card__open,
+  .work-card:focus-visible .work-card__open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .work-card:active .work-card__media {
+    transform: scale(0.985);
+  }
+
+  .work-card__foot {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding-inline: 2px;
+  }
+
+  .work-card__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.24rem, 1.6vw, 1.6rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  .work-card__meta {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+
+  .work-card__year {
+    color: var(--ink-4);
+  }
+
+  .work-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-top: clamp(26px, 3.4vw, 42px);
+    padding-top: clamp(14px, 1.6vw, 20px);
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .work-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+  }
+
+  .work-count {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5em;
+    color: var(--ink-4);
+  }
+
+  .work-count span {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0;
+    color: var(--ink);
+  }
+
+  @media (max-width: 700px) {
+    .work-item {
+      width: min(76vw, 330px);
+    }
+
+    .work-foot {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+</style>

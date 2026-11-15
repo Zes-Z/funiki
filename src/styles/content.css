@@ -1,0 +1,293 @@
+/* ============================================================
+   Sheet content — case studies & thoughts typography
+   ============================================================ */
+
+.case,
+.post {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(30px, 4vw, 52px);
+}
+
+.case__head,
+.post__head {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 1.8vw, 22px);
+}
+
+.case__eyebrow,
+.post__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.case__eyebrow-sep {
+  opacity: 0.5;
+}
+
+.case__title,
+.post__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.4vw, 2.7rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.case__subtitle {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+  color: var(--ink-3);
+}
+
+.case__summary,
+.post__excerpt {
+  max-width: 58ch;
+  font-size: clamp(1rem, 0.4vw + 0.9rem, 1.14rem);
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+.case__tags,
+.post__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.case__tags li,
+.post__tags li {
+  padding: 0.45em 0.8em 0.5em;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.case__cover,
+.post__cover {
+  margin: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--paper-sink);
+  box-shadow:
+    0 0 0 1px rgba(20, 19, 16, 0.05),
+    0 30px 70px -50px rgba(20, 19, 16, 0.5);
+}
+
+.case__cover img,
+.post__cover img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.post__cover .frame__media {
+  aspect-ratio: auto;
+}
+
+.post__cover .frame__media img {
+  height: auto;
+}
+
+.post__cover {
+  width: min(100%, 520px);
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.case__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: clamp(18px, 2vw, 26px);
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.case__foot-line {
+  width: 40px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.post__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: clamp(18px, 2vw, 26px);
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+/* ------------------------------- prose ------------------------------- */
+
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2vw, 26px);
+  font-size: clamp(1rem, 0.3vw + 0.94rem, 1.1rem);
+  line-height: 1.78;
+  color: var(--ink-2);
+}
+
+.prose > * {
+  max-width: 64ch;
+}
+
+.prose h2 {
+  margin-top: clamp(18px, 3vw, 36px);
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 2.8vw, 2.4rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.prose h3 {
+  margin-top: 0.6em;
+  font-family: var(--font-sans);
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.prose p {
+  margin: 0;
+}
+
+.prose a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.prose ul,
+.prose ol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  padding-left: 1.3em;
+  list-style: disc;
+}
+
+.prose ol {
+  list-style: decimal;
+}
+
+.prose li::marker {
+  color: var(--accent);
+}
+
+.prose blockquote {
+  max-width: 60ch;
+  margin-block: clamp(10px, 2vw, 20px);
+  padding: clamp(16px, 2.4vw, 28px) clamp(20px, 3vw, 34px);
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--paper-sink) 52%, transparent);
+  border-radius: 0 12px 12px 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  line-height: 1.42;
+  color: var(--ink);
+}
+
+.prose blockquote p {
+  max-width: none;
+}
+
+.prose figure {
+  margin-block: clamp(10px, 2vw, 22px);
+  max-width: none;
+}
+
+.prose img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  background: var(--paper-sink);
+}
+
+.prose figcaption {
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+.prose hr {
+  width: 100%;
+  max-width: none;
+  height: 1px;
+  border: 0;
+  background: var(--line);
+  margin-block: clamp(10px, 2vw, 20px);
+}
+
+.prose code {
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  background: var(--paper-sink);
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+}
+
+.prose pre {
+  max-width: none;
+  padding: 20px 22px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--paper);
+  overflow-x: auto;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+  color: inherit;
+}
+
+/* markdown images inside case bodies can sit side by side */
+@media (min-width: 760px) {
+  .prose p:has(> img + img) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    max-width: none;
+  }
+}

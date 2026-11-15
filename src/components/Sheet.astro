@@ -1,0 +1,159 @@
+---
+import Icon from './Icon.astro';
+---
+
+<div
+  class="sheet"
+  data-sheet-root
+  aria-hidden="true"
+  hidden
+  role="dialog"
+  aria-modal="true"
+  aria-label="内容详情"
+>
+  <div class="sheet__bar">
+    <p class="sheet__kicker">
+      <span class="sheet__kicker-dot" aria-hidden="true"></span>
+      <span data-sheet-kicker>Reading</span>
+    </p>
+    <button class="sheet__close" type="button" data-sheet-close aria-label="关闭详情">
+      <Icon name="close" size={17} />
+    </button>
+  </div>
+
+  <div
+    class="sheet__scroll"
+    data-sheet-scroll
+    data-lenis-prevent
+    tabindex="0"
+    role="region"
+    aria-label="详情内容"
+  >
+    <div class="sheet__inner" data-sheet-content></div>
+  </div>
+
+  <div class="sheet__progress" aria-hidden="true">
+    <span class="sheet__progress-bar" data-sheet-progress></span>
+  </div>
+</div>
+
+<style>
+  .sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    clip-path: inset(0 0 0 0 round 0);
+    will-change: clip-path;
+  }
+
+  .sheet[hidden] {
+    display: none;
+  }
+
+  .sheet__bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: clamp(14px, 2.4vw, 24px) var(--pad-x);
+    pointer-events: none;
+  }
+
+  .sheet__kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    padding: 0.55em 0.95em;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--paper) 78%, transparent);
+    backdrop-filter: blur(14px) saturate(1.2);
+    border: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    pointer-events: auto;
+  }
+
+  .sheet__kicker-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .sheet__close {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: color-mix(in srgb, var(--paper) 78%, transparent);
+    backdrop-filter: blur(14px) saturate(1.2);
+    color: var(--ink);
+    pointer-events: auto;
+    transition: background-color 0.4s var(--ease-out), color 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  }
+
+  .sheet__close:hover {
+    background: var(--paper-sink);
+    color: var(--ink);
+    transform: rotate(90deg);
+  }
+
+  .sheet__scroll {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .sheet__inner {
+    width: 100%;
+    max-width: 940px;
+    margin-inline: auto;
+    padding: clamp(84px, 12vh, 130px) var(--pad-x) clamp(120px, 16vh, 180px);
+    will-change: transform, opacity;
+  }
+
+  .sheet__progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: transparent;
+    z-index: 3;
+  }
+
+  .sheet__progress-bar {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  @media (max-width: 640px) {
+    .sheet__close {
+      width: 44px;
+      height: 44px;
+    }
+  }
+</style>

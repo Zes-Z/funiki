@@ -1,0 +1,618 @@
+---
+import Icon from './Icon.astro';
+import siteConfig from '../../siteconfig';
+
+const { sections, identity, socials, site } = siteConfig;
+
+const craftWords = ['Design', 'Code', 'Typography', 'Slow Tools'];
+const lifeWords = ['Coffee', 'Film', 'Walking', 'Mountains', 'Curiosity'];
+
+const socialHref = (social: (typeof socials)[number]) =>
+  social.icon === 'mailcolor' ? `mailto:${identity.email}` : social.url;
+const isExternal = (social: (typeof socials)[number]) => social.icon !== 'mailcolor';
+
+---
+
+<section id="beyond" class="section section--beyond">
+  <div class="wrap">
+    <div class="beyond-intro" data-reveal>
+      <p class="eyebrow eyebrow--dot">{sections.beyond.label}</p>
+      <h2 class="beyond-intro__title">{sections.beyond.title}</h2>
+      <p class="beyond-intro__text">{sections.beyond.intro}</p>
+    </div>
+  </div>
+
+  <div class="tail-marquee" data-tail-marquee aria-hidden="true">
+    {[
+      { words: craftWords, reverse: false },
+      { words: lifeWords, reverse: true },
+    ].map((band) => (
+      <div class={`tail-marquee__row${band.reverse ? ' tail-marquee__row--reverse' : ''}`}>
+        <div class="tail-marquee__track">
+          {[0, 1].map(() => (
+            <div class="tail-marquee__set">
+              {band.words.map((word) => (
+                <span class="tail-marquee__item">
+                  {word}
+                  <span class="tail-marquee__spark">
+                    <Icon name="spark" size={13} />
+                  </span>
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<section id="hello" class="section section--tail" data-tail>
+  <div class="wrap">
+    <div class="tail-cta" data-reveal>
+      <p class="eyebrow eyebrow--dot">Say hello</p>
+      <h2 class="tail-cta__title" data-tail-title>
+        <span class="tail-cta__row">{sections.tail.ctaTitle}</span>
+      </h2>
+      <p class="tail-cta__text">{sections.tail.ctaText}</p>
+      <div class="tail-cta__actions">
+        <a class="tail-email" href={`mailto:${identity.email}`} data-magnetic data-email-link>
+          <span class="tail-email__text">{identity.email}</span>
+          <span class="tail-email__icon" aria-hidden="true">
+            <Icon name="arrow-up-right" size={18} />
+          </span>
+        </a>
+        <button class="pill tail-copy" type="button" data-copy-email>
+          <Icon name="mail" size={14} />
+          复制邮箱
+          <kbd>E</kbd>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer" data-footer>
+    <div class="wrap footer__inner">
+      <div class="footer__identity">
+        <figure class="footer-portrait" data-footer-portrait>
+          <img src={identity.avatar} alt={identity.avatarAlt} width="720" height="720" loading="lazy" decoding="async" />
+        </figure>
+        <div class="footer__signature" aria-hidden="true">
+          <span>{site.title}</span>
+        </div>
+      </div>
+
+      <div class="footer__main">
+        <div class="footer__lines">
+          <p class="footer__line" style="--i: 0">
+            {sections.tail.footerLine}
+          </p>
+          <a class="footer__email" style="--i: 1" href={`mailto:${identity.email}`} data-email-link>
+            {identity.email}
+            <span class="footer__email-line" aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <ul class="footer__socials" style="--i: 2">
+          {socials.map((social) => (
+            <li>
+              <a
+                class="footer__social"
+                href={socialHref(social)}
+                target={isExternal(social) ? '_blank' : undefined}
+                rel={isExternal(social) ? 'noopener noreferrer' : undefined}
+                aria-label={social.label}
+                title={social.label}
+              >
+                <Icon name={social.icon} size={16} />
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div class="footer__meta" style="--i: 3">
+          <p class="footer__location">
+            <span class="footer__dot" aria-hidden="true"></span>
+            {identity.location}
+            <span class="footer__sep" aria-hidden="true">·</span>
+            <time data-clock="hms">--:--:--</time>
+          </p>
+          <p class="footer__legal">{sections.tail.copyright}</p>
+          <button class="footer__top" type="button" data-back-to-top>
+            {sections.tail.backToTop}
+            <Icon name="arrow-up" size={13} />
+          </button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" data-toast role="status" aria-live="polite">
+    <span class="toast__dot" aria-hidden="true"></span>
+    邮箱已复制到剪贴板
+  </div>
+</section>
+
+<style>
+  .section--tail {
+    padding-bottom: 0;
+    overflow: clip;
+  }
+
+  /* ------------------------------ 04 · beyond, but like the Say hello block ------------------------------ */
+
+  .section--beyond {
+    padding-bottom: 0;
+  }
+
+  .beyond-intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(12px, 1.8vw, 22px);
+    text-align: center;
+  }
+
+  .beyond-intro__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 5.2vw, 4.3rem);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+  }
+
+  .beyond-intro__text {
+    max-width: 34ch;
+    color: var(--ink-3);
+    line-height: 1.7;
+  }
+
+  /* ------------------------------ interests marquee ------------------------------ */
+
+  .tail-marquee {
+    margin-top: clamp(38px, 5.5vw, 72px);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .tail-marquee__row {
+    overflow: hidden;
+    padding-block: clamp(12px, 1.6vw, 18px);
+  }
+
+  .tail-marquee__row + .tail-marquee__row {
+    border-top: 1px solid var(--line);
+  }
+
+  .tail-marquee__track {
+    display: flex;
+    width: max-content;
+    animation: tail-marquee 42s linear infinite;
+    will-change: transform;
+  }
+
+  .tail-marquee__row--reverse .tail-marquee__track {
+    animation-direction: reverse;
+    animation-duration: 48s;
+  }
+
+  .tail-marquee:hover .tail-marquee__track {
+    animation-play-state: paused;
+  }
+
+  .tail-marquee__set {
+    display: flex;
+    align-items: center;
+    gap: clamp(20px, 2.6vw, 34px);
+    padding-right: clamp(20px, 2.6vw, 34px);
+  }
+
+  .tail-marquee__item {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(20px, 2.6vw, 34px);
+    font-family: var(--font-display);
+    font-size: clamp(1.08rem, 1.65vw, 1.46rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+
+  .tail-marquee__spark {
+    display: inline-grid;
+    place-items: center;
+    color: var(--accent);
+    opacity: 0.55;
+  }
+
+  @keyframes tail-marquee {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tail-marquee__track {
+      animation: none;
+    }
+  }
+
+  /* ------------------------------ CTA ------------------------------ */
+
+  .tail-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(14px, 2vw, 26px);
+    padding-block: clamp(18px, 3vw, 42px) clamp(70px, 9vw, 120px);
+    text-align: center;
+  }
+
+  .tail-cta__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 5.2vw, 4.3rem);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    overflow: hidden;
+    padding: 0.06em 0.12em 0.14em;
+  }
+
+  .tail-cta__row {
+    display: inline-block;
+    transition: transform 0.8s var(--ease-out), opacity 0.6s var(--ease-out);
+  }
+
+  .tail-cta__title:hover .tail-cta__row,
+  .tail-cta__title:focus-visible .tail-cta__row {
+    transform: translateY(-0.04em);
+  }
+
+  .tail-cta__title :global(.cta-char) {
+    display: inline-block;
+    will-change: transform;
+  }
+
+  .tail-cta__text {
+    max-width: 34ch;
+    color: var(--ink-3);
+    line-height: 1.7;
+  }
+
+  .tail-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(12px, 1.6vw, 20px);
+    margin-top: clamp(10px, 1.6vw, 18px);
+  }
+
+  .tail-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+    padding: 0.86em 1.2em 0.9em;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: clamp(0.9rem, 0.4vw + 0.82rem, 1.02rem);
+    letter-spacing: 0.005em;
+    will-change: transform;
+  }
+
+  .tail-email__icon {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(246, 244, 239, 0.14);
+    transition: transform 0.5s var(--ease-out), background-color 0.4s ease;
+  }
+
+  .tail-email:hover .tail-email__icon {
+    transform: rotate(45deg);
+    background: var(--accent);
+  }
+
+  .tail-copy {
+    min-height: 44px;
+    border-color: var(--line-strong);
+  }
+
+  .tail-copy kbd {
+    display: inline-grid;
+    place-items: center;
+    min-width: 18px;
+    height: 18px;
+    padding-inline: 4px;
+    margin-left: 3px;
+    border-radius: 5px;
+    border: 1px solid var(--line-strong);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    line-height: 1;
+    transition: border-color 0.4s ease, color 0.4s ease;
+  }
+
+  .tail-copy:hover kbd {
+    border-color: rgba(246, 244, 239, 0.4);
+  }
+
+  /* ------------------------------ footer ------------------------------ */
+
+  .site-footer {
+    padding-block: clamp(56px, 8vw, 100px) clamp(28px, 3.4vw, 44px);
+    border-top: 1px solid var(--line);
+  }
+
+  .footer__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+    gap: clamp(34px, 6vw, 96px);
+    align-items: start;
+  }
+
+  .footer__identity {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(18px, 2.4vw, 26px);
+  }
+
+  .footer-portrait {
+    width: min(11.5rem, 46vw);
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 10px;
+    background: var(--paper-sink);
+    transform: translateY(16px);
+    opacity: 0;
+    -webkit-mask-image: linear-gradient(to top, #000 33%, transparent 66%);
+    mask-image: linear-gradient(to top, #000 33%, transparent 66%);
+    -webkit-mask-size: 100% 300%;
+    mask-size: 100% 300%;
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+    transition:
+      opacity 0.8s var(--ease-out),
+      transform 1.1s var(--ease-out),
+      -webkit-mask-position 1.4s var(--ease-in-out),
+      mask-position 1.4s var(--ease-in-out);
+  }
+
+  .footer-portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.65) contrast(1.04) saturate(0.8);
+  }
+
+  .footer__signature {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.8rem, 2.8vw, 2.5rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    transform: rotate(-3deg);
+    opacity: 0;
+    translate: 0 12px;
+    transition: opacity 0.8s var(--ease-out), translate 1.1s var(--ease-out);
+  }
+
+  .footer__main {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 4vw, 48px);
+  }
+
+  .footer__lines {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 2.4vw, 26px);
+  }
+
+  .footer__line {
+    max-width: 26ch;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.1vw, 1.85rem);
+    font-weight: 500;
+    line-height: 1.22;
+    letter-spacing: -0.015em;
+    opacity: 0;
+    translate: 0 12px;
+    transition: opacity 0.8s var(--ease-out), translate 1.1s var(--ease-out);
+  }
+
+  .footer__email {
+    position: relative;
+    display: inline-flex;
+    align-self: flex-start;
+    flex-direction: column;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: clamp(0.9rem, 0.4vw + 0.82rem, 1.05rem);
+    letter-spacing: 0.02em;
+    opacity: 0;
+    translate: 0 12px;
+    transition: opacity 0.8s var(--ease-out), translate 1.1s var(--ease-out);
+  }
+
+  .footer__email-line {
+    height: 1px;
+    width: 100%;
+    background: var(--ink);
+    transform: scaleX(0.35);
+    transform-origin: left;
+    transition: transform 0.6s var(--ease-out);
+  }
+
+  .footer__email:hover .footer__email-line {
+    transform: scaleX(1);
+  }
+
+  .footer__socials {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    translate: 0 12px;
+    transition: opacity 0.8s var(--ease-out), translate 1.1s var(--ease-out);
+  }
+
+  .footer__social {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    color: var(--ink-2);
+    transition: transform 0.3s var(--ease-out), background-color 0.3s var(--ease-out), color 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+  }
+
+  .footer__social:hover {
+    transform: translateY(-4px) scale(1.05);
+    background: var(--paper-sink);
+    color: var(--ink);
+    border-color: var(--line-strong);
+  }
+
+  .footer__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding-top: clamp(16px, 2vw, 22px);
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    opacity: 0;
+    translate: 0 12px;
+    transition: opacity 0.8s var(--ease-out), translate 1.1s var(--ease-out);
+  }
+
+  .footer__location {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .footer__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #3f8f5c;
+    box-shadow: 0 0 0 3px rgba(63, 143, 92, 0.16);
+  }
+
+  .footer__sep {
+    opacity: 0.5;
+  }
+
+  .footer__legal {
+    color: var(--ink-4);
+  }
+
+  .footer__top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding-block: 6px;
+    color: var(--ink-2);
+    transition: color 0.3s ease, gap 0.4s var(--ease-out);
+  }
+
+  .footer__top:hover {
+    color: var(--accent);
+    gap: 0.8em;
+  }
+
+  /* entrance choreography — JS flips .is-signed */
+  .site-footer.is-signed .footer-portrait {
+    opacity: 1;
+    transform: none;
+    -webkit-mask-position: 0 100%;
+    mask-position: 0 100%;
+  }
+
+  .site-footer.is-signed .footer__signature,
+  .site-footer.is-signed .footer__line,
+  .site-footer.is-signed .footer__email,
+  .site-footer.is-signed .footer__socials,
+  .site-footer.is-signed .footer__meta {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  .site-footer.is-signed .footer__line {
+    transition-delay: calc(var(--i) * 0.14s);
+  }
+
+  .site-footer.is-signed .footer__email {
+    transition-delay: calc(var(--i) * 0.14s);
+  }
+
+  .site-footer.is-signed .footer__socials {
+    transition-delay: calc(var(--i) * 0.14s);
+  }
+
+  .site-footer.is-signed .footer__meta {
+    transition-delay: calc(var(--i) * 0.14s);
+  }
+
+  /* ------------------------------ toast ------------------------------ */
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: clamp(24px, 4vw, 44px);
+    z-index: 120;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    padding: 0.7em 1.1em;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transform: translate(-50%, 12px);
+    pointer-events: none;
+  }
+
+  .toast__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #8fc9a3;
+  }
+
+  @media (max-width: 860px) {
+
+    .footer__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .footer-portrait {
+      width: min(9rem, 42vw);
+    }
+  }
+</style>

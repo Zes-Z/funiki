@@ -1,0 +1,165 @@
+---
+import '@fontsource-variable/instrument-sans';
+import '@fontsource-variable/bricolage-grotesque';
+import '../styles/global.css';
+import '../styles/content.css';
+import siteConfig from '../../siteconfig';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `${siteConfig.identity.name} — ${siteConfig.identity.role}`,
+  description = siteConfig.site.description,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://funiki.example.com');
+
+const avatarRadius =
+  siteConfig.hero.avatarShape === 'circle'
+    ? '50%'
+    : siteConfig.hero.avatarShape === 'rounded'
+      ? '26px'
+      : '50% 50% 10px 10px';
+---
+
+<!doctype html>
+<html lang={siteConfig.site.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={siteConfig.identity.name} />
+    <meta name="theme-color" content={siteConfig.site.themeColor} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style is:inline set:html={`:root{--hero-avatar-radius:${avatarRadius};--avatar-size:${siteConfig.hero.avatarSize};}`} />
+    <link rel="preload" as="image" href={siteConfig.identity.avatar} fetchpriority="high" />
+    <link rel="apple-touch-icon" href="/avatar.jpg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={siteConfig.site.title} />
+    <meta property="og:image" content={new URL('/og.jpg', canonical)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${siteConfig.identity.name} · ${siteConfig.identity.role}`} />
+    <meta property="og:locale" content="zh_CN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL('/og.jpg', canonical)} />
+
+    <noscript>
+      <style>
+        .intro { display: none !important; }
+      </style>
+    </noscript>
+
+    <script is:inline>
+      // Paint the JS state before first paint to avoid reveal flashes.
+      document.documentElement.classList.add('js');
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('reduced-motion');
+      }
+      if (new URLSearchParams(location.search).has('no-intro')) {
+        document.documentElement.classList.add('no-intro');
+      }
+
+      // Safety net: a failed module request (stale Vite deps, offline, old
+      // browser) must never leave visitors staring at the intro curtain.
+      (function () {
+        function failSafe() {
+          var intro = document.querySelector('[data-intro]');
+          if (!intro) return;
+          intro.remove();
+          document.documentElement.classList.add('is-intro-done', 'intro-fallback');
+          try {
+            window.dispatchEvent(new CustomEvent('funiki:intro-done'));
+          } catch (e) {}
+        }
+        window.addEventListener(
+          'error',
+          function (event) {
+            var target = event && event.target;
+            if (target && target.tagName === 'SCRIPT') failSafe();
+          },
+          true
+        );
+        window.setTimeout(function () {
+          if (!document.documentElement.classList.contains('is-intro-done')) failSafe();
+        }, 6000);
+      })();
+    </script>
+
+    <script>
+      import '../scripts/main';
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+
+
+    <!-- custom cursor -->
+    <div class="cursor" data-cursor aria-hidden="true"></div>
+    <div class="cursor-ring" data-cursor-ring aria-hidden="true"></div>
+
+    <!-- intro curtain -->
+    <div class="intro" data-intro aria-hidden="true">
+      <div class="intro__inner">
+        <span class="intro__word"><span data-intro-word>{siteConfig.site.title}</span></span>
+        <span class="intro__meta" data-intro-meta>{siteConfig.identity.role} · 2026</span>
+      </div>
+    </div>
+
+    <slot />
+  </body>
+</html>
+
+<style>
+  .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    place-items: center;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .intro__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+  }
+
+  .intro__word {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(3rem, 9vw, 6.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    overflow: hidden;
+    display: block;
+    padding: 0.06em 0.1em 0.12em;
+  }
+
+  .intro__meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  :global(html.no-intro) .intro {
+    display: none;
+  }
+</style>
