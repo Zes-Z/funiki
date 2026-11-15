@@ -45,7 +45,7 @@ export const siteConfig = {
     imageAreaRatio: 0.56,
     /** 首屏上半区的大图（放在 public/ 下，替换成你自己的图片即可） */
     coverImage: '/hero.jpg',
-    coverAlt: '首屏图片占位，替换成你自己的照片或作品图',
+    // coverAlt: '首屏图片占位，替换成你自己的照片或作品图',
     /** 头像直径的 clamp 值（位于上下两块之间的分界线上） */
     avatarSize: 'clamp(104px, 13vh, 140px)',
     /** 头像形状：'circle' | 'rounded' | 'arch' */
