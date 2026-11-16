@@ -37,6 +37,7 @@ export function initDock() {
     return {
       startX: avatarDocLeft,
       avatarDocTop,
+      startY: avatarDocTop - START(),
       size,
       endX: dx,
       endY: dy,
@@ -97,13 +98,19 @@ export function initDock() {
 
   const applyState = (progress: number) => {
     const p = Math.max(0, Math.min(1, progress));
-    // The hero keeps moving with the page. Blend from its current viewport
-    // position so the handoff preserves that motion, then settle at the dock.
+    // Match the hero's upward velocity at the start, then arrive at the dock
+    // with zero velocity. A direct blend from the scrolling hero position can
+    // overshoot the dock and reverse direction just before the handoff.
     const blend = p * p * (3 - 2 * p);
-    const { startX, avatarDocTop, endX, endY, endScale } = geometry;
+    const { startX, startY, endX, endY, endScale } = geometry;
+    const travel = END() - START();
+    const y =
+      (2 * p ** 3 - 3 * p ** 2 + 1) * startY +
+      (-2 * p ** 3 + 3 * p ** 2) * endY -
+      (p ** 3 - 2 * p ** 2 + p) * travel;
     gsap.set(morph, {
       x: startX + (endX - startX) * blend,
-      y: avatarDocTop - window.scrollY + (endY - (avatarDocTop - window.scrollY)) * blend,
+      y,
       scale: 1 + (endScale - 1) * blend,
     });
     if (p >= 1) {
