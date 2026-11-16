@@ -65,6 +65,7 @@ const isExternal = (social: (typeof socials)[number]) => social.icon !== 'mailco
             <li>
               <a
                 class="hero__social"
+                data-icon={social.icon}
                 href={socialHref(social)}
                 target={isExternal(social) ? '_blank' : undefined}
                 rel={isExternal(social) ? 'noopener noreferrer' : undefined}
@@ -274,6 +275,10 @@ const isExternal = (social: (typeof socials)[number]) => social.icon !== 'mailco
     background: transparent;
     color: var(--accent);
     transform: translateY(-2px);
+  }
+
+  .hero__social[data-icon='github']:hover {
+    color: var(--ink-2);
   }
 
   .hero__resume {
