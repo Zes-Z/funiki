@@ -36,7 +36,7 @@ export function initDock() {
 
     return {
       startX: avatarDocLeft,
-      startY: avatarDocTop - START(),
+      avatarDocTop,
       size,
       endX: dx,
       endY: dy,
@@ -44,28 +44,12 @@ export function initDock() {
     };
   };
 
-  const timeline = gsap.timeline({ paused: true });
-
-  const buildTimeline = () => {
-    const m = measure();
-    if (!m.size) return;
-    gsap.set(morph, { width: m.size, height: m.size });
-    timeline.clear();
-    timeline.fromTo(
-      morph,
-      { x: m.startX, y: m.startY, scale: 1 },
-      {
-        x: m.endX,
-        y: m.endY,
-        scale: m.endScale,
-        duration: 1,
-        ease: 'none',
-        immediateRender: false,
-      }
-    );
+  let geometry = measure();
+  const refreshGeometry = () => {
+    geometry = measure();
+    gsap.set(morph, { width: geometry.size, height: geometry.size });
   };
-
-  buildTimeline();
+  refreshGeometry();
 
   let dockShown = false;
   let morphShown = false;
@@ -98,7 +82,7 @@ export function initDock() {
     dockRoot.removeAttribute('inert');
     dockRoot.setAttribute('aria-hidden', 'false');
     document.documentElement.classList.add('is-docked');
-    gsap.to(dockRoot, { autoAlpha: 1, duration: 0.4, ease: 'power2.out', overwrite: true });
+    gsap.set(dockRoot, { autoAlpha: 1 });
   };
 
   const hideDock = () => {
@@ -107,19 +91,28 @@ export function initDock() {
     dockRoot.setAttribute('inert', '');
     dockRoot.setAttribute('aria-hidden', 'true');
     document.documentElement.classList.remove('is-docked');
-    gsap.to(dockRoot, { autoAlpha: 0, duration: 0.25, overwrite: true });
+    gsap.set(dockRoot, { autoAlpha: 0 });
     closeMenu();
   };
 
   const applyState = (progress: number) => {
     const p = Math.max(0, Math.min(1, progress));
-    if (p >= 0.999) {
+    // The hero keeps moving with the page. Blend from its current viewport
+    // position so the handoff preserves that motion, then settle at the dock.
+    const blend = p * p * (3 - 2 * p);
+    const { startX, avatarDocTop, endX, endY, endScale } = geometry;
+    gsap.set(morph, {
+      x: startX + (endX - startX) * blend,
+      y: avatarDocTop - window.scrollY + (endY - (avatarDocTop - window.scrollY)) * blend,
+      scale: 1 + (endScale - 1) * blend,
+    });
+    if (p >= 1) {
       hideMorph();
       hideHeroAvatar();
       showDock();
       return;
     }
-    if (p > 0.004) {
+    if (p > 0) {
       hideDock();
       showMorph();
       hideHeroAvatar();
@@ -134,8 +127,7 @@ export function initDock() {
     trigger: hero,
     start: () => START(),
     end: () => END(),
-    scrub: 0.7,
-    animation: timeline,
+    onRefreshInit: refreshGeometry,
     invalidateOnRefresh: true,
     onRefresh: (self) => applyState(self.progress),
     onUpdate: (self) => applyState(self.progress),
@@ -151,8 +143,6 @@ export function initDock() {
     showHeroAvatar();
     gsap.set(dockRoot, { autoAlpha: 0 });
   }
-
-  ScrollTrigger.addEventListener('refreshInit', buildTimeline);
 
   /* -------------------------------------------------------------- */
   /* 2. pop-over menu                                               */
@@ -279,7 +269,6 @@ export function initDock() {
   // Keep dock state correct once fonts are ready (hero height can shift).
   if (document.fonts?.ready) {
     document.fonts.ready.then(() => {
-      buildTimeline();
       ScrollTrigger.refresh();
     });
   }
