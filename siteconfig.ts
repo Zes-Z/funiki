@@ -122,10 +122,7 @@ export const siteConfig = {
       intro: '工作之外，构成我的那些东西。',
     },
     tail: {
-      ctaTitle: '不如聊一聊',
-      ctaText: '如果你也喜欢把东西做得慢一点、好一点，欢迎写信给我。',
       footerLine: '目前接受品牌与产品设计委托，也乐意做点没头没尾的小实验。',
-      ctaEmailLabel: '写封邮件',
       backToTop: '回到顶部',
       copyright: '© 2026 Funiki. Built with Astro, GSAP & a lot of coffee.',
     },

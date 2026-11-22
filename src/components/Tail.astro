@@ -48,31 +48,7 @@ const isExternal = (social: (typeof socials)[number]) => social.icon !== 'mailco
   </div>
 </section>
 
-<section id="hello" class="section section--tail" data-tail>
-  <div class="wrap">
-    <div class="tail-cta" data-reveal>
-      <p class="eyebrow eyebrow--dot">Say hello</p>
-      <h2 class="tail-cta__title" data-tail-title>
-        <span class="tail-cta__row">{sections.tail.ctaTitle}</span>
-      </h2>
-      <p class="tail-cta__text">{sections.tail.ctaText}</p>
-      <div class="tail-cta__actions">
-        <a class="tail-email" href={`mailto:${identity.email}`} data-magnetic data-email-link>
-          <span class="tail-email__text">{identity.email}</span>
-          <span class="tail-email__icon" aria-hidden="true">
-            <Icon name="arrow-up-right" size={18} />
-          </span>
-        </a>
-        <button class="pill tail-copy" type="button" data-copy-email>
-          <Icon name="mail" size={14} />
-          复制邮箱
-          <kbd>E</kbd>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <footer class="site-footer" data-footer>
+<footer class="site-footer is-signed" data-footer>
     <div class="wrap footer__inner">
       <div class="footer__identity">
         <figure class="footer-portrait" data-footer-portrait>
@@ -128,19 +104,8 @@ const isExternal = (social: (typeof socials)[number]) => social.icon !== 'mailco
     </div>
   </footer>
 
-  <div class="toast" data-toast role="status" aria-live="polite">
-    <span class="toast__dot" aria-hidden="true"></span>
-    邮箱已复制到剪贴板
-  </div>
-</section>
-
 <style>
-  .section--tail {
-    padding-bottom: 0;
-    overflow: clip;
-  }
-
-  /* ------------------------------ 04 · beyond, but like the Say hello block ------------------------------ */
+  /* ------------------------------ 04 · beyond ------------------------------ */
 
   .section--beyond {
     padding-bottom: 0;
@@ -243,109 +208,6 @@ const isExternal = (social: (typeof socials)[number]) => social.icon !== 'mailco
     .tail-marquee__track {
       animation: none;
     }
-  }
-
-  /* ------------------------------ CTA ------------------------------ */
-
-  .tail-cta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: clamp(14px, 2vw, 26px);
-    padding-block: clamp(18px, 3vw, 42px) clamp(70px, 9vw, 120px);
-    text-align: center;
-  }
-
-  .tail-cta__title {
-    font-family: var(--font-display);
-    font-size: clamp(2.1rem, 5.2vw, 4.3rem);
-    font-weight: 600;
-    line-height: 1.02;
-    letter-spacing: -0.04em;
-    overflow: hidden;
-    padding: 0.06em 0.12em 0.14em;
-  }
-
-  .tail-cta__row {
-    display: inline-block;
-    transition: transform 0.8s var(--ease-out), opacity 0.6s var(--ease-out);
-  }
-
-  .tail-cta__title:hover .tail-cta__row,
-  .tail-cta__title:focus-visible .tail-cta__row {
-    transform: translateY(-0.04em);
-  }
-
-  .tail-cta__title :global(.cta-char) {
-    display: inline-block;
-    will-change: transform;
-  }
-
-  .tail-cta__text {
-    max-width: 34ch;
-    color: var(--ink-3);
-    line-height: 1.7;
-  }
-
-  .tail-cta__actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(12px, 1.6vw, 20px);
-    margin-top: clamp(10px, 1.6vw, 18px);
-  }
-
-  .tail-email {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.7em;
-    padding: 0.86em 1.2em 0.9em;
-    border-radius: 999px;
-    background: var(--ink);
-    color: var(--paper);
-    font-size: clamp(0.9rem, 0.4vw + 0.82rem, 1.02rem);
-    letter-spacing: 0.005em;
-    will-change: transform;
-  }
-
-  .tail-email__icon {
-    display: grid;
-    place-items: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: rgba(246, 244, 239, 0.14);
-    transition: transform 0.5s var(--ease-out), background-color 0.4s ease;
-  }
-
-  .tail-email:hover .tail-email__icon {
-    transform: rotate(45deg);
-    background: var(--accent);
-  }
-
-  .tail-copy {
-    min-height: 44px;
-    border-color: var(--line-strong);
-  }
-
-  .tail-copy kbd {
-    display: inline-grid;
-    place-items: center;
-    min-width: 18px;
-    height: 18px;
-    padding-inline: 4px;
-    margin-left: 3px;
-    border-radius: 5px;
-    border: 1px solid var(--line-strong);
-    font-family: var(--font-mono);
-    font-size: 9px;
-    line-height: 1;
-    transition: border-color 0.4s ease, color 0.4s ease;
-  }
-
-  .tail-copy:hover kbd {
-    border-color: rgba(246, 244, 239, 0.4);
   }
 
   /* ------------------------------ footer ------------------------------ */
@@ -575,35 +437,6 @@ const isExternal = (social: (typeof socials)[number]) => social.icon !== 'mailco
 
   .site-footer.is-signed .footer__meta {
     transition-delay: calc(var(--i) * 0.14s);
-  }
-
-  /* ------------------------------ toast ------------------------------ */
-
-  .toast {
-    position: fixed;
-    left: 50%;
-    bottom: clamp(24px, 4vw, 44px);
-    z-index: 120;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6em;
-    padding: 0.7em 1.1em;
-    border-radius: 999px;
-    background: var(--ink);
-    color: var(--paper);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    opacity: 0;
-    transform: translate(-50%, 12px);
-    pointer-events: none;
-  }
-
-  .toast__dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: #8fc9a3;
   }
 
   @media (max-width: 860px) {
