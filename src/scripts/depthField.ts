@@ -22,7 +22,10 @@ const PERSPECTIVE = 900; // px, how fast things shrink with depth
 const SPACING = 300; // px of depth between pieces
 const VIEW_DEPTH = 2600; // px, how far ahead pieces are visible
 const FOCAL = 700; // px, the depth that is sharp
-const SPAN = 0.9; // field width in viewports (edge pieces are clamped inside)
+const SPAN = 0.9; // field width in viewports
+
+/** Horizontal starting offset as a share of viewport width. >0 shifts the image stream right. */
+const FIELD_OFFSET_X = 0.04;
 const MAX_BLUR = 8; // px
 const SHARP_BAND = 380; // px either side of FOCAL that stays sharp
 const BLUR_FALLOFF = 160; // px of depth per px of blur beyond the band
@@ -496,7 +499,7 @@ function create(section: HTMLElement, wall: HTMLElement, tiles: HTMLElement[]): 
     const spread = Math.pow(s / FOCAL_SCALE, 0.6);
     const spanX = view.w * SPAN;
     const spanY = view.h * SPAN;
-    const x = wrap(item.u - (cam.x * s) / spanX) * spanX * spread;
+    const x = FIELD_OFFSET_X * view.w + wrap(item.u - (cam.x * s) / spanX) * spanX * spread;
     const y = wrap(item.v - (cam.y * s) / spanY) * spanY * spread;
     const opacity =
       smooth(40, 260, depth) * (1 - smooth(VIEW_DEPTH - 700, VIEW_DEPTH - 80, depth));

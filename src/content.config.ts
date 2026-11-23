@@ -3,10 +3,10 @@ import { glob, file } from 'astro/loaders';
 
 /**
  * 实习 / 项目经历
- * 目录结构示例：src/content/internship·project/teacher/teacher.md（图片放在同一文件夹里）
+ * 目录结构示例：src/content/project/teacher/teacher.md（图片放在同一文件夹里）
  */
 const project = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/internship·project' }),
+  loader: glob({ pattern: '**/*.md', base: './src/content/project' }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),

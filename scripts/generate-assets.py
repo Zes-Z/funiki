@@ -203,29 +203,29 @@ IMAGE_JOBS = [
     # only regenerated with --only avatar, see make_avatar() below.
 
     # --- projects  cover 4:5 / gallery 14:9 / gallery 3:4 ---
-    ("fog_pines", "src/content/internship·project/shanwu/cover.jpg", 1200, 1500, 0.5, 0.45, 420),
-    ("lake_cabin", "src/content/internship·project/shanwu/gallery-01.jpg", 1400, 900, 0.5, 0.55, 420),
-    ("tea", "src/content/internship·project/shanwu/gallery-02.jpg", 900, 1200, 0.55, 0.5, 420),
+    ("fog_pines", "src/content/project/shanwu/cover.jpg", 1200, 1500, 0.5, 0.45, 420),
+    ("lake_cabin", "src/content/project/shanwu/gallery-01.jpg", 1400, 900, 0.5, 0.55, 420),
+    ("tea", "src/content/project/shanwu/gallery-02.jpg", 900, 1200, 0.55, 0.5, 420),
 
-    ("museum", "src/content/internship·project/atelier-north/cover.jpg", 1200, 1500, 0.55, 0.55, 420),
-    ("white_arch", "src/content/internship·project/atelier-north/gallery-01.jpg", 1400, 900, 0.5, 0.35, 420),
-    ("library_curved", "src/content/internship·project/atelier-north/gallery-02.jpg", 900, 1200, 0.5, 0.5, 420),
+    ("museum", "src/content/project/atelier-north/cover.jpg", 1200, 1500, 0.55, 0.55, 420),
+    ("white_arch", "src/content/project/atelier-north/gallery-01.jpg", 1400, 900, 0.5, 0.35, 420),
+    ("library_curved", "src/content/project/atelier-north/gallery-02.jpg", 900, 1200, 0.5, 0.5, 420),
 
-    ("plant_hand", "src/content/internship·project/hedgerow/cover.jpg", 1200, 1500, 0.5, 0.5, 420),
-    ("plant_leaf", "src/content/internship·project/hedgerow/gallery-01.jpg", 1400, 900, 0.5, 0.5, 420),
-    ("plant_white", "src/content/internship·project/hedgerow/gallery-02.jpg", 900, 1200, 0.5, 0.5, 420),
+    ("plant_hand", "src/content/project/hedgerow/cover.jpg", 1200, 1500, 0.5, 0.5, 420),
+    ("plant_leaf", "src/content/project/hedgerow/gallery-01.jpg", 1400, 900, 0.5, 0.5, 420),
+    ("plant_white", "src/content/project/hedgerow/gallery-02.jpg", 900, 1200, 0.5, 0.5, 420),
 
-    ("desk_warm", "src/content/internship·project/slow-tools/cover.jpg", 1200, 1500, 0.55, 0.5, 420),
-    ("sticky_note", "src/content/internship·project/slow-tools/gallery-01.jpg", 1400, 900, 0.5, 0.5, 420),
-    ("paper_sculpt", "src/content/internship·project/slow-tools/gallery-02.jpg", 900, 1200, 0.5, 0.5, 420),
+    ("desk_warm", "src/content/project/slow-tools/cover.jpg", 1200, 1500, 0.55, 0.5, 420),
+    ("sticky_note", "src/content/project/slow-tools/gallery-01.jpg", 1400, 900, 0.5, 0.5, 420),
+    ("paper_sculpt", "src/content/project/slow-tools/gallery-02.jpg", 900, 1200, 0.5, 0.5, 420),
 
-    ("books_stack", "src/content/internship·project/paper-plain/cover.jpg", 1200, 1500, 0.5, 0.5, 420),
-    ("book_leaf", "src/content/internship·project/paper-plain/gallery-01.jpg", 1400, 900, 0.5, 0.5, 420),
-    ("notebook", "src/content/internship·project/paper-plain/gallery-02.jpg", 900, 1200, 0.55, 0.5, 420),
+    ("books_stack", "src/content/project/paper-plain/cover.jpg", 1200, 1500, 0.5, 0.5, 420),
+    ("book_leaf", "src/content/project/paper-plain/gallery-01.jpg", 1400, 900, 0.5, 0.5, 420),
+    ("notebook", "src/content/project/paper-plain/gallery-02.jpg", 900, 1200, 0.55, 0.5, 420),
 
-    ("tokyo_neon", "src/content/internship·project/city-walk/cover.jpg", 1200, 1500, 0.55, 0.5, 420),
-    ("city_canyon", "src/content/internship·project/city-walk/gallery-01.jpg", 1400, 900, 0.5, 0.5, 420),
-    ("flatiron", "src/content/internship·project/city-walk/gallery-02.jpg", 900, 1200, 0.5, 0.5, 420),
+    ("tokyo_neon", "src/content/project/city-walk/cover.jpg", 1200, 1500, 0.55, 0.5, 420),
+    ("city_canyon", "src/content/project/city-walk/gallery-01.jpg", 1400, 900, 0.5, 0.5, 420),
+    ("flatiron", "src/content/project/city-walk/gallery-02.jpg", 900, 1200, 0.5, 0.5, 420),
 
     # --- life photos, assorted aspect ratios (long edge 1200-1440) ---
     ("deer", "src/content/picture/photos/life-01.jpg", 1350, 900, 0.55, 0.55, 360),
