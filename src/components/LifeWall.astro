@@ -7,19 +7,19 @@ import '../styles/depth-field.css';
 
 const { sections } = siteConfig;
 
-const pictures = (await getCollection('picture')).sort((a, b) => a.data.order - b.data.order);
+const pictures = (await getCollection('album')).sort((a, b) => a.data.order - b.data.order);
 
-const imageModules = import.meta.glob<any>('/src/content/picture/**/*.{jpg,jpeg,png,webp,avif}', {
+const imageModules = import.meta.glob<any>('/src/content/album/**/*.{jpg,jpeg,png,webp,avif}', {
   eager: true,
   import: 'default',
 });
-const videoModules = import.meta.glob<string>('/src/content/picture/**/*.{mp4,webm}', {
+const videoModules = import.meta.glob<string>('/src/content/album/**/*.{mp4,webm}', {
   eager: true,
   query: '?url',
   import: 'default',
 });
 
-const base = '/src/content/picture/';
+const base = '/src/content/album/';
 
 const resolveImage = (path: string) => imageModules[base + path];
 const resolveVideo = (path?: string) => (path ? videoModules[base + path] : undefined);

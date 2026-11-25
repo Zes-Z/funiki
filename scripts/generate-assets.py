@@ -228,20 +228,20 @@ IMAGE_JOBS = [
     ("flatiron", "src/content/project/city-walk/gallery-02.jpg", 900, 1200, 0.5, 0.5, 420),
 
     # --- life photos, assorted aspect ratios (long edge 1200-1440) ---
-    ("deer", "src/content/picture/photos/life-01.jpg", 1350, 900, 0.55, 0.55, 360),
-    ("mountain_clouds", "src/content/picture/photos/life-02.jpg", 1280, 720, 0.5, 0.5, 320),
-    ("canopy", "src/content/picture/photos/life-03.jpg", 960, 1200, 0.5, 0.5, 420),
-    ("ferns", "src/content/picture/photos/life-04.jpg", 860, 1200, 0.5, 0.5, 420),
-    ("coffee_cups", "src/content/picture/photos/life-05.jpg", 1100, 1100, 0.5, 0.5, 380),
-    ("coffee_plant", "src/content/picture/photos/life-06.jpg", 1100, 1100, 0.5, 0.5, 380),
-    ("cafe_neon", "src/content/picture/photos/life-07.jpg", 960, 1200, 0.68, 0.42, 420),
-    ("night_street", "src/content/picture/photos/life-08.jpg", 800, 1200, 0.5, 0.5, 420),
-    ("cherry", "src/content/picture/photos/life-09.jpg", 1350, 900, 0.5, 0.45, 360),
-    ("vintage_cam", "src/content/picture/photos/life-10.jpg", 1350, 900, 0.55, 0.5, 360),
-    ("sofa", "src/content/picture/photos/life-11.jpg", 1350, 900, 0.5, 0.5, 360),
-    ("rain_window", "src/content/picture/photos/life-12.jpg", 800, 1200, 0.5, 0.5, 420),
-    ("beach", "src/content/picture/photos/life-13.jpg", 1280, 720, 0.5, 0.5, 320),
-    ("dog_beach", "src/content/picture/photos/life-14.jpg", 960, 1200, 0.5, 0.5, 420),
+    ("deer", "src/content/album/photos/life-01.jpg", 1350, 900, 0.55, 0.55, 360),
+    ("mountain_clouds", "src/content/album/photos/life-02.jpg", 1280, 720, 0.5, 0.5, 320),
+    ("canopy", "src/content/album/photos/life-03.jpg", 960, 1200, 0.5, 0.5, 420),
+    ("ferns", "src/content/album/photos/life-04.jpg", 860, 1200, 0.5, 0.5, 420),
+    ("coffee_cups", "src/content/album/photos/life-05.jpg", 1100, 1100, 0.5, 0.5, 380),
+    ("coffee_plant", "src/content/album/photos/life-06.jpg", 1100, 1100, 0.5, 0.5, 380),
+    ("cafe_neon", "src/content/album/photos/life-07.jpg", 960, 1200, 0.68, 0.42, 420),
+    ("night_street", "src/content/album/photos/life-08.jpg", 800, 1200, 0.5, 0.5, 420),
+    ("cherry", "src/content/album/photos/life-09.jpg", 1350, 900, 0.5, 0.45, 360),
+    ("vintage_cam", "src/content/album/photos/life-10.jpg", 1350, 900, 0.55, 0.5, 360),
+    ("sofa", "src/content/album/photos/life-11.jpg", 1350, 900, 0.5, 0.5, 360),
+    ("rain_window", "src/content/album/photos/life-12.jpg", 800, 1200, 0.5, 0.5, 420),
+    ("beach", "src/content/album/photos/life-13.jpg", 1280, 720, 0.5, 0.5, 320),
+    ("dog_beach", "src/content/album/photos/life-14.jpg", 960, 1200, 0.5, 0.5, 420),
 
     # --- thought covers: each cropped to its frame's own aspect ratio ---
     # stamp 5:4 · polaroid 4:5 · film 3:2 · ticket 5:4 · tape 4:5 · mount 3:4
@@ -264,9 +264,9 @@ VIDEO_JOBS = [
     ("fog_pines", "public/project-shanwu.mp4", 720, 900, 5.0, "in", 27),
     ("desk_warm", "public/project-slow-tools.mp4", 720, 900, 5.0, "drift", 27),
     ("tokyo_neon", "public/project-city-walk.mp4", 720, 900, 5.0, "out", 27),
-    ("cafe_neon", "src/content/picture/videos/live-01.mp4", 768, 960, 5.0, "in", 26),
-    ("rain_window", "src/content/picture/videos/live-02.mp4", 640, 960, 5.0, "drift", 26),
-    ("dog_beach", "src/content/picture/videos/live-03.mp4", 768, 960, 5.0, "out", 26),
+    ("cafe_neon", "src/content/album/videos/live-01.mp4", 768, 960, 5.0, "in", 26),
+    ("rain_window", "src/content/album/videos/live-02.mp4", 640, 960, 5.0, "drift", 26),
+    ("dog_beach", "src/content/album/videos/live-03.mp4", 768, 960, 5.0, "out", 26),
 ]
 
 
@@ -505,7 +505,7 @@ def main():
             if only != "all":
                 if "internship" in rel and only != "projects":
                     continue
-                if "picture/photos" in rel and only != "life":
+                if "album/photos" in rel and only != "life":
                     continue
                 if "post/" in rel and only != "thoughts":
                     continue
@@ -517,7 +517,7 @@ def main():
             total += size
             role = ("项目封面" if rel.endswith("cover.jpg") and "internship" in rel
                     else "项目图" if "internship" in rel
-                    else "生活照片" if "picture/photos" in rel
+                    else "生活照片" if "album/photos" in rel
                     else "随想封面" if "post/" in rel
                     else "头像")
             used.append((role, rel, slot))
@@ -535,7 +535,7 @@ def main():
         for slot, rel, w, h, fx, fy, kb in IMAGE_JOBS:
             role = ("项目封面" if rel.endswith("cover.jpg") and "internship" in rel
                     else "项目图" if "internship" in rel
-                    else "生活照片" if "picture/photos" in rel
+                    else "生活照片" if "album/photos" in rel
                     else "随想封面" if "post/" in rel
                     else "头像")
             used.append((role, rel, slot))

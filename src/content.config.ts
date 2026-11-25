@@ -49,8 +49,8 @@ const post = defineCollection({
 /**
  * 生活图片 + photometa.json 元信息
  */
-const picture = defineCollection({
-  loader: file('./src/content/picture/photometa.json'),
+const album = defineCollection({
+  loader: file('./src/content/album/photometa.json'),
   schema: z.object({
     id: z.string(),
     image: z.string(),
@@ -67,4 +67,4 @@ const picture = defineCollection({
   }),
 });
 
-export const collections = { project, post, picture };
+export const collections = { project, post, album };

@@ -44,8 +44,8 @@ src/
   content/
     internship·project/<slug>/  ← 项目：cover.jpg + 内嵌图 + <slug>.md
     post/<slug>/                ← 随想：cover.jpg + index.md
-    picture/photos/ + videos/   ← 生活图片与实况视频
-    picture/photometa.json      ← 图片元信息（画幅、说明、拍摄地、实况视频）
+    album/photos/ + videos/   ← 生活图片与实况视频
+    album/photometa.json      ← 图片元信息（画幅、说明、拍摄地、实况视频）
   content.config.ts           ← 三个 collection 的 schema
 public/
   avatar.webp  avatar.jpg(回退)  kim cv.pdf  og.jpg  media/*.mp4  favicon.svg
@@ -94,7 +94,7 @@ Markdown 正文，支持图片 `![](./gallery-01.jpg)`、引用、列表。
 
 **新增随想**：`src/content/post/<slug>/cover.jpg + index.md`，`frame` 三选一：`stamp（切割邮票边） | deckle（手撕毛边） | hairline（画廊白边）`。
 
-**新增生活图片**：图片放进 `src/content/picture/photos/`（视频放 `videos/`），再在 `src/content/picture/photometa.json` 里追加一项：
+**新增生活图片**：图片放进 `src/content/album/photos/`（视频放 `videos/`），再在 `src/content/album/photometa.json` 里追加一项：
 
 ```json
 {
