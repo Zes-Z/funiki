@@ -30,7 +30,7 @@ export const siteConfig = {
     location: '杭州，中国',
     timezone: 'Asia/Shanghai',
     /** 头像：放在 public/ 下，建议 800×800 以上正方形 */
-    avatar: '/avatar.webp',
+    avatar: '/favicon.jpg',
     /** 头像的替代文字（给读屏 / SEO 用，不是图片地址） */
     avatarAlt: 'Funiki 的黑白头像',
     /** 简历：放在 public/ 下，文件名可含空格 */
